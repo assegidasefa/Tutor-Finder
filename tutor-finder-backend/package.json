@@ -4,8 +4,8 @@
   "description": "tutorial finder ",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "start:prod": "NODE_ENV=production nodemon server.js",
+    "start": "nodemon src/server.js",
+    "start:prod": "NODE_ENV=production nodemon src/server.js",
     "debug": "ndb server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

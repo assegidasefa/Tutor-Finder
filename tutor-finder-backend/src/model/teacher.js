@@ -24,6 +24,17 @@ const teacherSchema =mongoose.Schema({
        type:String,
        required:true,
    },
+   ratingsAverage: {
+    type: Number,
+    default: 4.5,
+    min: [1, 'Rating must be above 1.0'],
+    max: [5, 'Rating must be below 5.0'],
+    set: val => Math.round(val * 10) / 10 // 4.666666, 46.6666, 47, 4.7
+  },
+  ratingsQuantity: {
+    type: Number,
+    default: 0
+  },
    address:{
        type:String,
        required:true
@@ -47,8 +58,15 @@ const teacherSchema =mongoose.Schema({
     required:true
        
    },
+
   
 })
+teacherSchema.index({ price: 1, ratingsAverage: -1 });
+teacherSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField: 'teacher',
+    localField: '_id'
+  });
 
   
 const Teacher = mongoose.model('Teacher', teacherSchema);

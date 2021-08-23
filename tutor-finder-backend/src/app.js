@@ -13,6 +13,7 @@ const userRouter = require('./routes/users');
 const requestRouter = require('./routes/requests');
 const studentRouter = require('./routes/students');
 const teacherRouter = require('./routes/teachers');
+const reviewRouter = require('./routes/review');
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use(xss());
 app.use(
   hpp({
     whitelist: [
+      
     
     ]
   })
@@ -67,6 +69,7 @@ app.use('/api/v1/users', userRouter);
 app.use('/api/v1/requests', requestRouter);
 app.use('/api/v1/students', studentRouter);
 app.use('/api/v1/teachers', teacherRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
