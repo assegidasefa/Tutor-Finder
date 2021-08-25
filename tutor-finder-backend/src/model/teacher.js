@@ -15,11 +15,6 @@ const teacherSchema =mongoose.Schema({
        type:String,
        required:false
    },
-   qualifications:{
-       type:String,
-       required:false
-
-   },
    subject:{
        type:String,
        required:true,
@@ -35,7 +30,7 @@ const teacherSchema =mongoose.Schema({
     type: Number,
     default: 0
   },
-   address:{
+   state:{
        type:String,
        required:true
    },
@@ -48,7 +43,7 @@ const teacherSchema =mongoose.Schema({
        required:true
    },
   
-   locality:{
+   classPerWeek:{
        type:String,
        required:true
    },
