@@ -15,6 +15,7 @@ const studentRouter = require('./routes/students');
 const teacherRouter = require('./routes/teachers');
 const reviewRouter = require('./routes/review');
 const paymentOptionRouter = require('./routes/paymentOption');
+const paymentConfrimationRouter = require('./routes/paymentConfirmation');
 
 const app = express();
 
@@ -72,6 +73,7 @@ app.use('/api/v1/students', studentRouter);
 app.use('/api/v1/teachers', teacherRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/paymentOptions', paymentOptionRouter);
+app.use('/api/v1/paymentConfirmations', paymentConfrimationRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
