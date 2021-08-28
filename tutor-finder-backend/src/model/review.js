@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Teacher = require('./teacher');
+//const Teacher = require('./teacher');
 
 
 const reviewSchema = new mongoose.Schema(
@@ -15,12 +15,12 @@ const reviewSchema = new mongoose.Schema(
       },
       teacher: {
         type: mongoose.Schema.ObjectId,
-        ref: 'Teacher',
+        ref: 'User',
         required: [true, 'Review must belong to a teacher.']
       },
       student: {
         type: mongoose.Schema.ObjectId,
-        ref: 'Student',
+        ref: 'User',
         required: [true, 'Review must belong to a student']
       },
       createdAt: {
@@ -45,10 +45,11 @@ const reviewSchema = new mongoose.Schema(
     //   select: 'name photo'
     // });
   
-    // this.populate({
-    //   path: 'student',
-    //   select: 'name photo'
-    // });
+    this.populate({
+      path: 'student',
+      select: 'firstName profilePic'
+    });
+
     next();
   });
   
@@ -68,12 +69,12 @@ const reviewSchema = new mongoose.Schema(
     // console.log(stats);
   
     if (stats.length > 0) {
-      await Teacher.findByIdAndUpdate(teacherId, {
+      await User.findByIdAndUpdate(teacherId, {
         ratingsQuantity: stats[0].nRating,
         ratingsAverage: stats[0].avgRating
       });
     } else {
-      await Teacher.findByIdAndUpdate(teacherId, {
+      await User.findByIdAndUpdate(teacherId, {
         ratingsQuantity: 0,
         ratingsAverage: 4.5
       });

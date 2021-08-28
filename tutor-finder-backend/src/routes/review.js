@@ -11,7 +11,7 @@ router
   .get(reviewController.getAllReviews)
   .post(
     authController.restrictTo('student'),
-    reviewController.setTeacherStudentIds,
+    //reviewController.setTeacherStudentIds,
     reviewController.createReview
   );
 
