@@ -29,7 +29,7 @@ exports.uploadUserPhoto = upload.single('profilePic');
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
-  req.file.filename = `user-${req.params.id}-${Date.now()}.jpeg`;
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
   await sharp(req.file.buffer)
     .resize(500, 500)
@@ -72,7 +72,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     req.body.profilePic = req.file.filename;
   }
   // 3) Update user document
-  const userupdate = await User.findByIdAndUpdate(req.params.id, req.body, {
+  const userupdate = await User.findByIdAndUpdate(req.user.id, req.body, {
     new: true,
     runValidators: true
   });

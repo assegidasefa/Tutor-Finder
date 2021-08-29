@@ -20,7 +20,7 @@ router.get('/me', userController.getMe, userController.getUser);
 router.delete('/deleteMe',  userController.deleteMe);
 
 // user updating the profile
-router.route('/updateMe/:id').patch(userController.uploadUserPhoto,userController.resizeUserPhoto,userController.updateMe);
+router.route('/updateUserDetail').patch(userController.uploadUserPhoto,userController.resizeUserPhoto,authController.protect,authController.restrictTo('STUDENT','TEACHER'),userController.updateMe);
 
 router.route('/admin').get(userController.getAllUsers)
   router.route('/').post(userController.createUser);
