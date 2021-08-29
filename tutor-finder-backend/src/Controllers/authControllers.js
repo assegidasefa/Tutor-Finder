@@ -6,20 +6,24 @@ const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
 
-const signToken = id => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN
+const signToken = ({ _id, email, role }) => {
+  return jwt.sign({ id: _id, email, role }, process.env.JWT_SECRET || "secret", {
+    expiresIn: process.env.JWT_EXPIRES_IN || "1hr"
   });
 };
 
 const createSendToken = (user, statusCode, res) => {
-  const token = signToken(user._id);
+  console.log("chec555k ")
+  const token = signToken(user);
+  const expDate = Date.now() + (31 * 24 * 60 * 60 * 1000)
   const cookieOptions = {
     expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      // Date.now() + process.env.JWT_COOKIE_EXPIRES_IN || 31 * 24 * 60 * 60 * 1000
+     expDate
     ),
     httpOnly: true
   };
+  console.log("current date and expire date", Date.now(), expDate)
   if (process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
   res.cookie('jwt', token, cookieOptions);
@@ -37,19 +41,28 @@ const createSendToken = (user, statusCode, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    email: req.body.email,
-    role: req.body.role,
-    password: req.body.password,
-    passwordConfirm: req.body.passwordConfirm,
+  try {
 
-  });
+    const { firstName, lastName, email, role, password, passwordConfirm } = req.body;
+    console.log("inside sign up", firstName, lastName, email, role, password, passwordConfirm)
 
-  createSendToken(newUser, 201, res);
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      email,
+      role,
+      password,
+
+    });
+    console.log("inside sign up", newUser)
+
+
+    createSendToken(newUser, 201, res);
+  } catch (error) {
+    console.log("error is", error)
+  }
 });
-  
+
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 

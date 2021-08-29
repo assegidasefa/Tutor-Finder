@@ -1,5 +1,5 @@
 import { Avatar, Button, Container, FormControl, FormControlLabel, Grid, Radio, TextField, Typography } from '@material-ui/core';
-import React from 'react'
+import React, { useState } from 'react'
 import { useStyles } from './Login_style';
 import Paper from '@material-ui/core/Paper';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
@@ -8,24 +8,68 @@ import IconButton from '@material-ui/core/IconButton';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import LockIcon from '@material-ui/icons/Lock';
+import { login } from '../../api/auth';
+import Alert from '@material-ui/lab/Alert';
+import { useEffect } from 'react';
 
 
 export default function Login() {
+    const [password, setPassword] = useState("")
+    const [email, setEmail] = useState("")
+    const [errorMessage, setErrorMessage] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
     const classes = useStyles();
-    const [values, setValues] = React.useState({
-        password: '',
-        weight: '',
-        showPassword: false,
-    });
+    const history = useHistory()
+    // useEffect(() => {
+    //     if (localStorage.getItem("token")) {
+    //         history.push("/")
+    //     }
 
-    const handleChange = (prop) => (event) => {
-        setValues({ ...values, [prop]: event.target.value });
-    };
+    // }, [history])
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setLoading(true)
+        try {
+            const result = await login(email, password);
+            console.log(result, " logged in response")
+            if (result.status === "success") {
+                localStorage.setItem("token", JSON.stringify(result.token))
+                localStorage.setItem("uid", JSON.stringify(result.data.user.id))
+                // console.log(result.data.user.id)
+
+            }
+            // history.replace("/")
+            history.push("/tutor-requirement")
+
+        } catch (error) {
+            setErrorMessage({ message: error.message })
+            console.log("login error")
+        }
+        setLoading(false)
+    }
+
+    const ShowErrorMessage = ({ message }) => {
+        console.log("message is ", message)
+        return (
+            <Alert severity="error">{message}</Alert>
+        )
+    }
+
+
+    // const handleChangeEmail = (prop) => (event) => {
+    //     setEmail({ ...email, [prop]: event.target.value });
+    // };
+    // const handleChangePassword = (prop) => (event) => {
+    //     setPassword({ ...password, [prop]: event.target.value });
+    // };
 
     const handleClickShowPassword = () => {
-        setValues({ ...values, showPassword: !values.showPassword });
+        setShowPassword({ ...showPassword, showPassword: !showPassword });
     };
 
     const handleMouseDownPassword = (event) => {
@@ -36,38 +80,21 @@ export default function Login() {
             <Paper className={classes.paper}>
                 <Grid align='center'>
 
-                    <Avatar className={classes.avatar}><LockIcon/></Avatar>
+                    <Avatar className={classes.avatar}><LockIcon /></Avatar>
                     <Grid item xs={12}>
                         <Typography align='center' color="textSecondary" variant='h5'>Login</Typography>
-
-                        <div className={classes.RadioCheckBoxContainer}>
-
-                            <FormControlLabel
-                                value="Student"
-                                control={<Radio color="primary" />}
-                                label="As Student"
-                                labelPlacement="start"
-                            />
-                            
-                            {/* <Grid><Typography  variant={"h3"}></Typography></Grid> */}
-                            <FormControlLabel
-                                value="Teacher"
-                                control={<Radio color="primary" />}
-                                label="As Teacher"
-                                labelPlacement="start"
-                            />
-                        </div>
+                        {errorMessage && <ShowErrorMessage {...errorMessage} />}
                     </Grid>
-                    <form className={classes.form}>
-                        <TextField value={values.weight} onChange={handleChange('weight')} id="outlined-basic" label="email" variant="outlined" placeholder="ex:-  joni@gmail.com" fullWidth required />
+                    <form className={classes.form} onSubmit={handleSubmit}>
+                        <TextField value={email} onChange={(e) => { setEmail(e.target.value) }} id="outlined-basic" label="email" variant="outlined" placeholder="ex:-  joni@gmail.com" fullWidth required />
                         <FormControl className={clsx(classes.margin, classes.textField)} variant="outlined">
                             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                             <OutlinedInput
                                 id="outlined-adornment-password"
                                 placeholder="5 min character"
-                                type={values.showPassword ? 'text' : 'password'}
-                                value={values.password}
-                                onChange={handleChange('password')}
+                                type={showPassword ? 'text' : 'password'}
+                                value={password}
+                                onChange={(e) => { setPassword(e.target.value) }}
                                 endAdornment={
                                     <InputAdornment position="end">
                                         <IconButton
@@ -76,25 +103,34 @@ export default function Login() {
                                             onMouseDown={handleMouseDownPassword}
                                             edge="end"
                                         >
-                                            {values.showPassword ? <Visibility /> : <VisibilityOff />}
+                                            {showPassword ? <Visibility /> : <VisibilityOff />}
                                         </IconButton>
                                     </InputAdornment>
                                 }
                                 labelWidth={70}
                             />
                         </FormControl>
-                        <Link to="auto/verification">
+                        <Link to="forget-password">
 
                             <Typography variant={"h6"} align="right" className={classes.typography}>Forget Password?</Typography>
                         </Link>
-                        <Button fullWidth variant="contained" color="secondary">
+                        {/* <Button fullWidth variant="contained" color="secondary">
+                            Login
+                        </Button> */}
+                        <Button
+                            fullWidth
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+
+                        >
                             Login
                         </Button>
-                        <Typography align="center" variant={"h6"} color="textPrimary" className={classes.typography} >Don't have an acount? <Link to="auth/signup">Register Now</Link></Typography>
+                        <Typography align="center" variant={"h6"} color="textPrimary" className={classes.typography} >Don't have an acount? <Link to="signup">Register Now</Link></Typography>
 
                     </form>
                 </Grid>
             </Paper>
-        </Grid>
+        </Grid >
     )
 }

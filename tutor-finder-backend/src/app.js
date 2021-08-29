@@ -13,12 +13,20 @@ const userRouter = require('./routes/users');
 const requestRouter = require('./routes/requests');
 const studentRouter = require('./routes/students');
 const teacherRouter = require('./routes/teachers');
+const cors = require("cors")
 
 const app = express();
 
 // 1) GLOBAL MIDDLEWARES
 // Set security HTTP headers
-app.use(helmet());
+// app.use(helmet());
+var corsOptions = {
+  origin: 'http://localhost:3001',
+  credentials: true,
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
+app.use(cors(corsOptions))
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {
@@ -39,14 +47,13 @@ app.use(express.json({ limit: '10kb' }));
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
 
-// Data sanitization against XSS
+// // Data sanitization against XSS
 app.use(xss());
 
-// Prevent parameter pollution
+// // Prevent parameter pollution
 app.use(
   hpp({
     whitelist: [
-    
     ]
   })
 );

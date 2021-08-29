@@ -4,7 +4,7 @@
   "description": "tutorial finder ",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "dev": "nodemon ./src/server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
     "debug": "ndb server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -31,5 +31,8 @@
     "sharp": "^0.28.3",
     "validator": "^13.6.0",
     "xss-clean": "^0.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
   }
 }

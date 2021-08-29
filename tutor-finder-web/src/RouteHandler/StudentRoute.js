@@ -5,7 +5,8 @@ import { loggedin_user } from "./loggedindata";
 
 const StudentRoute = ({ exact, component: Component, ...rest }) => {
   // const { auth_user } = useAuthState(); //read user details from context
-  const auth_user = loggedin_user
+  const auth_user = loggedin_user()
+  console.log(auth_user, " is auth userr")
   return (
     <Route
       exact

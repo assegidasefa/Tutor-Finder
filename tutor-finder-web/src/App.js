@@ -23,6 +23,9 @@ import admin_dashboard_page from './pages/admin_dashboard_page';
 import manage_tutor_page from './pages/manage_tutor_page';
 import manage_student_page from './pages/manage_student_page';
 import tutor_register_page from './pages/tutor_register_page';
+import forget_password_page from './pages/forget_password_page';
+import reset_password_page from './pages/reset_password_page';
+
 
 
 function App() {
@@ -31,7 +34,10 @@ function App() {
       <Switch>
         <Route exact path="/auth/signup" component={signup_page} />
         <Route exact path="/auth/login" component={LoginPage} />
+       
         <Route exact path="/auth/mock" component={Mock} />
+        <Route exact path="/auth/forget-password" component={forget_password_page} />
+        <Route exact path="/auth/reset-password:resetToken" component={reset_password_page} />
         <Route exact path="/tutor-register" component={tutor_register_page} />
         <Route exact path="/manage-student" component={manage_student_page} />
         <Route exact path="/manage-tutor" component={manage_tutor_page} />
