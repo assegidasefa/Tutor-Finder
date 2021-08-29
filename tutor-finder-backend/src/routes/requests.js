@@ -4,17 +4,16 @@ const authController = require('../Controllers/authControllers');
 
 const router = express.Router();
 
-// router.param('id', tourController.checkID);
 
-
-
-router.route("/sent").get(authController.protect,authController.restrictTo('student') ,requestController.getSentRequest)
+router.route('/sent').get(requestController.getSentRequest)
 router.route("/received").get(authController.protect,authController.restrictTo('teacher'),requestController.getReceivedRequest)
-router.get("/", authController.protect,authController.restrictTo('admin'),requestController.getRequests);
-
+router.route("/admin").get(requestController.getAllRequests);
 router.route('/updaterequest/:id').patch(authController.protect,authController.restrictTo('teacher'),requestController.updateRequest)
-//  .get(requestController.getRequest)
- 
-//   .delete(requestController.deleteRequest);
+router.route('/createRequest').post(requestController.createRequest);
 
+router
+  .route('/:id')
+  .get(requestController.getRequest)
+  .patch(requestController.updateRequest)
+  .delete(authController.protect,authController.restrictTo('teacher'),requestController.deleteRequest);
 module.exports = router;

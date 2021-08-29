@@ -41,20 +41,31 @@ const createSendToken = (user, statusCode, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
+
   try {
 
-    const { firstName, lastName, email, role, password, passwordConfirm } = req.body;
-    console.log("inside sign up", firstName, lastName, email, role, password, passwordConfirm)
+  //  const { firstName, lastName, email, role, password, passwordConfirm } = req.body;
+//    console.log("inside sign up", firstName, lastName, email, role, password, passwordConfirm)
 
-    const newUser = await User.create({
-      firstName,
-      lastName,
-      email,
-      role,
-      password,
+   // const newUser = await User.create({
+     // firstName,
+     // lastName,
+     // email,
+     // role,
+     // password,
 
-    });
-    console.log("inside sign up", newUser)
+   // });
+   // console.log("inside sign up", newUser)
+
+  const newUser = await User.create({
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    role: req.body.role,
+    password: req.body.password,
+    passwordConfirm: req.body.passwordConfirm,
+    
+
 
 
     createSendToken(newUser, 201, res);

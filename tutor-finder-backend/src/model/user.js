@@ -12,6 +12,45 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please tell us your lastName!']
   },
+  profilePic:{
+    type:String,
+    default:"default.jpeg"
+  },
+  address:{
+  type:String,
+  required:false
+},
+city:{
+  type:String,
+  required:false
+},
+classPerWeek:{
+  type:String,
+  required:false
+},
+experience:{
+  type:String,
+  required:false
+},
+phone:{
+  type:String,
+  required:false
+},
+school:{
+  type:String,
+  required:false
+},
+ratingsAverage: {
+  type: Number,
+  required:false,
+  min: [1, 'Rating must be above 1.0'],
+  max: [5, 'Rating must be below 5.0'],
+  set: val => Math.round(val * 10) / 10 // 4.666666, 46.6666, 47, 4.7
+},
+ratingsQuantity: {
+  type: Number,
+  required:false
+},
   email: {
     type: String,
     required: [true, 'Please provide your email'],
@@ -21,8 +60,13 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['STUDENT', 'teacher', 'admin'],
-    default: 'STUDENT'
+
+  //  enum: ['STUDENT', 'teacher', 'admin'],
+//    default: 'STUDENT'
+
+    enum: ['student', 'teacher'],
+    default: 'student'
+
   },
   password: {
     type: String,
@@ -84,6 +128,7 @@ userSchema.methods.changedPasswordAfter = function(JWTTimestamp) {
   return false;
 };
 
+
 userSchema.methods.createPasswordResetToken = function() {
   const resetToken = crypto.randomBytes(32).toString('hex');
 
@@ -97,13 +142,16 @@ userSchema.methods.createPasswordResetToken = function() {
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
+ 
 };
-userSchema.virtual('id').get(function (){
-  return this._id.toHexString();
-});
-userSchema.set('toJSON',{
-  virtuals:true,
-});
+
+
+userSchema.index({ price: 1, ratingsAverage: -1 });
+userSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField: 'teacher',
+    localField: '_id'
+  });
 
 
 const User = mongoose.model('User', userSchema);

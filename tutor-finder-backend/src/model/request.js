@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const requestSchema =mongoose.Schema({
     studentId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Student',
+        ref: 'User',
         required:true
     },
     status:{
@@ -15,7 +15,7 @@ const requestSchema =mongoose.Schema({
     },
     teacherId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Teacher',
+        ref: 'User',
         required:true
     }, 
      requestUpdatedAt: {

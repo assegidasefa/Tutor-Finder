@@ -1,12 +1,31 @@
 const Request = require('../model/request');
-const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAsync');
-const AppError = require('../utils/appError');
+const factory = require('./handlerFactory');
+const express = require('express');
 
+const app = express();
+
+
+
+// use middleware
+
+app.use(function(req,res,next) {
+  JWT.verify(req.cookies['token'], process.env.JWT_SECRET, function(err, decodedToken) {
+    if(err) { /* handle token err */ }
+    else {
+     req.userId = decodedToken.id;   // Add to req object
+     next();
+    }
+  });
+ });
 
 // this is for student
 exports.getSentRequest =  catchAsync(async (req, res, next) =>{
-  const response = await Request.find({studentId: req.query.studentId}).populate(["studentId", "teacherId"])
+  // there must be user id 
+  // console.log("This is the student id: " +req.userId);
+  const response = await Request.find(req.params.id).populate(["studentId", "teacherId"])
+  
+  
   res.status(200).json({
     status: 'success',
     results: response.length,
@@ -14,11 +33,12 @@ exports.getSentRequest =  catchAsync(async (req, res, next) =>{
       requests:response
     }
   });
-
-    
+ 
 });
+//for teachers
 exports.getReceivedRequest =catchAsync( async (req, res, next) =>{
-  const response = await Request.find({teacherId: req.query.teacherId}).populate(["studentId", "teacherId"])
+  const response = await Request.find(req.params.id).populate(["studentId", "teacherId"])
+  
   res.status(200).json({
     status: 'success',
     results: response.length,
@@ -28,11 +48,8 @@ exports.getReceivedRequest =catchAsync( async (req, res, next) =>{
   });
   
 });
-
-
-
-exports.getRequests = catchAsync(async (req, res, next) => {
-  const requests = await Request.find().populate('studentId');
+exports.getAllRequests = catchAsync(async (req, res, next) => {
+  const requests = await Request.find().populate(["studentId","teacherId"]);
 
   // SEND RESPONSE
   res.status(200).json({
@@ -43,60 +60,10 @@ exports.getRequests = catchAsync(async (req, res, next) => {
     }
   });
 });
-exports.getRequest = catchAsync(async (req, res, next) => {
-  const request = await Request.findById(req.params.id).populate('studentId', "teacherId");
-  // Tour.findOne({ _id: req.params.id })
 
-  if (!request) {
-    return next(new AppError('No request found with that ID', 404));
-  }
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      request
-    }
-  });
-});
 
-exports.createRequest = catchAsync(async (req, res, next) => {
-  const newRequest = await Request.create(req.body);
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      request: newRequest 
-    }
-  });
-});
-
-exports.updateRequest = catchAsync(async (req, res, next) => {
-  const request = await Request.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true
-  });
-
-  if (!request) {
-    return next(new AppError('No request found with that ID', 404));
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      request
-    }
-  });
-});
-
-exports.deleteRequest = catchAsync(async (req, res, next) => {
-  const request = await Request.findByIdAndDelete(req.params.id);
-
-  if (!request) {
-    return next(new AppError('No request found with that ID', 404));
-  }
-
-  res.status(204).json({
-    status: 'success',
-    data: null
-  });
-});
+exports.getRequest = factory.getOne(Request,{path:'studentId'});
+exports.createRequest = factory.createOne(Request,{path:'studentId'});
+exports.updateRequest = factory.updateOne(Request,{path:'studentId'});
+exports.deleteRequest = factory.deleteOne(Request);
