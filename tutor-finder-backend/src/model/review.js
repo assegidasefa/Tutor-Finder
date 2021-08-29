@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-//const Teacher = require('./teacher');
+const Teacher = require('./user');
 
 
 const reviewSchema = new mongoose.Schema(
@@ -31,24 +31,24 @@ const reviewSchema = new mongoose.Schema(
     {
       toJSON: { virtuals: true },
       toObject: { virtuals: true }
-    }, {timestamps: true}
+    },
   );
   
   reviewSchema.index({ teacher: 1, student: 1 }, { unique: true });
   
   reviewSchema.pre(/^find/, function(next) {
-    // this.populate({
-    //   path: 'teacher',
-    //   select: 'name'
-    // }).populate({
-    //   path: 'student',
-    //   select: 'name photo'
-    // });
-  
     this.populate({
+      path: 'teacher',
+      select: 'firstName lastName profilePic'
+    }).populate({
       path: 'student',
-      select: 'firstName profilePic'
+      select: 'firstName lastName profilePic'
     });
+  
+    // this.populate({
+    //   path: 'student',
+    //   select: 'firstName profilePic'
+    // });
 
     next();
   });
@@ -69,12 +69,12 @@ const reviewSchema = new mongoose.Schema(
     // console.log(stats);
   
     if (stats.length > 0) {
-      await User.findByIdAndUpdate(teacherId, {
+      await Teacher.findByIdAndUpdate(teacherId, {
         ratingsQuantity: stats[0].nRating,
         ratingsAverage: stats[0].avgRating
       });
     } else {
-      await User.findByIdAndUpdate(teacherId, {
+      await Teacher.findByIdAndUpdate(teacherId, {
         ratingsQuantity: 0,
         ratingsAverage: 4.5
       });
