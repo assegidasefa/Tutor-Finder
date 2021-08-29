@@ -15,16 +15,19 @@ router
     reviewController.setTeacherStudentIds,
     reviewController.createReview
   );
-
-router
+  router
   .route('/:id')
   .get(reviewController.getReview)
   .patch(
+    authController.restrictTo('STUDENT'),
     reviewController.updateReview
   )
   .delete(
-    authController.restrictTo('student'),
+    authController.restrictTo('STUDENT'),
     reviewController.deleteReview
   );
+
+
+
 
 module.exports = router;

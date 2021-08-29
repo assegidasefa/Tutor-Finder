@@ -1,15 +1,21 @@
 const express = require('express');
 const requestController = require('../controllers/requestControllers');
 const authController = require('../Controllers/authControllers');
+const router = express.Router({ mergeParams: true });
 
-const router = express.Router();
 
-
-router.route('/sent').get(requestController.getSentRequest)
-router.route("/received").get(authController.protect,authController.restrictTo('teacher'),requestController.getReceivedRequest)
-router.route("/admin").get(requestController.getAllRequests);
+router.route('/student').get(authController.protect,authController.restrictTo('student'),requestController.getStudentRequest)
+router.route("/admin").get(requestController.getAll);
 router.route('/updaterequest/:id').patch(authController.protect,authController.restrictTo('teacher'),requestController.updateRequest)
-router.route('/createRequest').post(requestController.createRequest);
+router.route('/').get(authController.protect,authController.restrictTo('teacher'),requestController.getAllRequests);
+
+
+router.route('/').
+post(
+  authController.protect,
+  authController.restrictTo('student'),
+  requestController.setTeacherStudentIds,
+  requestController.createRequest);
 
 router
   .route('/:id')

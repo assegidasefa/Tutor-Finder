@@ -2,6 +2,16 @@ const express = require('express');
 const userController = require('../Controllers/userControllers');
 const authController = require('../Controllers/authControllers');
 const router = express.Router();
+const reviewRouter = require('./review');
+const requestRouter = require('./requests');
+
+
+
+//used for review create 
+router.use('/:teacherId/reviews', reviewRouter);
+//used for the requests
+router.use('/teacher/:teacherId/requests',requestRouter);
+router.use('/student/:studentId/requests',requestRouter);
 
 
 

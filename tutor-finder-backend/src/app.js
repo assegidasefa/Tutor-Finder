@@ -16,10 +16,14 @@ const paymentOptionRouter = require('./routes/paymentOption');
 const paymentConfrimationRouter = require('./routes/paymentConfirmation');
 
 const app = express();
+const cors = require('cors');
+app.use(cors());
 
 // 1) GLOBAL MIDDLEWARES
 // Set security HTTP headers
 app.use(helmet());
+
+
 
 // Development logging
 if (process.env.NODE_ENV === 'development') {

@@ -5,27 +5,20 @@ const express = require('express');
 
 const app = express();
 
+//setting ids
 
+exports.setTeacherStudentIds = (req, res, next) => {
+  // Allow nested routes
+  if (!req.body.teacher) req.body.teacher = req.params.teacherId;
+  if (!req.body.student) req.body.student = req.user.id;
+  next();
+};
 
 // use middleware
-
-app.use(function(req,res,next) {
-  JWT.verify(req.cookies['token'], process.env.JWT_SECRET, function(err, decodedToken) {
-    if(err) { /* handle token err */ }
-    else {
-     req.userId = decodedToken.id;   // Add to req object
-     next();
-    }
-  });
- });
-
 // this is for student
-exports.getSentRequest =  catchAsync(async (req, res, next) =>{
-  // there must be user id 
-  // console.log("This is the student id: " +req.userId);
-  const response = await Request.find(req.params.id).populate(["studentId", "teacherId"])
-  
-  
+exports.getStudentRequest =  catchAsync(async (req, res, next) =>{
+
+  const response = await Request.find(req.params.id).populate(["student", "teacher"])
   res.status(200).json({
     status: 'success',
     results: response.length,
@@ -37,7 +30,8 @@ exports.getSentRequest =  catchAsync(async (req, res, next) =>{
 });
 //for teachers
 exports.getReceivedRequest =catchAsync( async (req, res, next) =>{
-  const response = await Request.find(req.params.id).populate(["studentId", "teacherId"])
+
+  const response = await Request.find(req.params.id).populate(["student", "teacher"])
   
   res.status(200).json({
     status: 'success',
@@ -48,8 +42,8 @@ exports.getReceivedRequest =catchAsync( async (req, res, next) =>{
   });
   
 });
-exports.getAllRequests = catchAsync(async (req, res, next) => {
-  const requests = await Request.find().populate(["studentId","teacherId"]);
+exports.getAll = catchAsync(async (req, res, next) => {
+  const requests = await Request.find().populate(["student","teacher"]);
 
   // SEND RESPONSE
   res.status(200).json({
@@ -61,9 +55,9 @@ exports.getAllRequests = catchAsync(async (req, res, next) => {
   });
 });
 
-
-
-exports.getRequest = factory.getOne(Request,{path:'studentId'});
-exports.createRequest = factory.createOne(Request,{path:'studentId'});
-exports.updateRequest = factory.updateOne(Request,{path:'studentId'});
+exports.getRequest = factory.getOne(Request,{path:'student'});
+exports.getAllRequests = factory.getAll(Request,{path:'student'})
+exports.getAllStudent = factory.getAllStudents(Request,{path:'student'})
+exports.createRequest = factory.createOne(Request,{path:'student'});
+exports.updateRequest = factory.updateOne(Request,{path:'student'});
 exports.deleteRequest = factory.deleteOne(Request);

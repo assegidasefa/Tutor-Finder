@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 
 const requestSchema =mongoose.Schema({
-    studentId: {
+    student: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required:true
@@ -13,7 +13,7 @@ const requestSchema =mongoose.Schema({
         default: 'pending'
 
     },
-    teacherId: {
+    teacher: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required:true
