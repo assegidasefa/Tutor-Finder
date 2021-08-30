@@ -1,6 +1,7 @@
 const express = require('express');
 const reviewController = require('../Controllers/reviewControllers');
 const authController = require('../Controllers/authControllers');
+const adminController = require('../Controllers/adminControllers');
 
 const router = express.Router({ mergeParams: true });
 
@@ -8,7 +9,7 @@ const router = express.Router({ mergeParams: true });
 
 router
   .route('/')
-  .get(reviewController.getAllReviews)
+  .get(adminController.protect,adminController.restrictTo('admin'),reviewController.getAllReviews)
   .post(
     authController.protect,
     authController.restrictTo('STUDENT'),

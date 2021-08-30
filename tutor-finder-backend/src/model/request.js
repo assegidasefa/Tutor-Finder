@@ -9,8 +9,8 @@ const requestSchema =mongoose.Schema({
     },
     status:{
         type: String,
-        enum: ['pending', 'accepted', 'rejected'],
-        default: 'pending'
+        enum: ['PENDING', 'ACCEPTED', 'REJECTED','WAITING'],
+        default: 'PENDING'
 
     },
     teacher: {

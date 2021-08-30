@@ -14,6 +14,7 @@ const requestRouter = require('./routes/requests');
 const reviewRouter = require('./routes/review');
 const paymentOptionRouter = require('./routes/paymentOption');
 const paymentConfrimationRouter = require('./routes/paymentConfirmation');
+const adminRouter = require('./routes/admin');
 
 const app = express();
 const cors = require('cors');
@@ -74,6 +75,8 @@ app.use('/api/v1/requests', requestRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/paymentOptions', paymentOptionRouter);
 app.use('/api/v1/paymentConfirmations', paymentConfrimationRouter);
+app.use('/api/v1/admins', adminRouter);
+
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

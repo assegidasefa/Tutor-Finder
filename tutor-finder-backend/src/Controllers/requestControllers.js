@@ -18,7 +18,7 @@ exports.setTeacherStudentIds = (req, res, next) => {
 // this is for student
 exports.getStudentRequest =  catchAsync(async (req, res, next) =>{
 
-  const response = await Request.find(req.params.id).populate(["student", "teacher"])
+  const response = await Request.find({student:req.user.id}).populate(["student", "teacher"])
   res.status(200).json({
     status: 'success',
     results: response.length,
@@ -31,7 +31,7 @@ exports.getStudentRequest =  catchAsync(async (req, res, next) =>{
 //for teachers
 exports.getReceivedRequest =catchAsync( async (req, res, next) =>{
 
-  const response = await Request.find(req.params.id).populate(["student", "teacher"])
+  const response = await Request.find({teacher:req.user.id}).populate(["student", "teacher"])
   
   res.status(200).json({
     status: 'success',
@@ -42,6 +42,33 @@ exports.getReceivedRequest =catchAsync( async (req, res, next) =>{
   });
   
 });
+
+exports.acceptRequest =catchAsync( async (req, res, next) =>{
+
+  const response = await Request.findByIdAndUpdate(req.params.id, {status:"WAITING"}, {new: true}).populate(["student", "teacher"])
+  
+  res.status(200).json({
+    status: 'success',
+    data: {
+      requests:response
+    }
+  });
+  
+});
+
+exports.approvedRequest =catchAsync( async (req, res, next) =>{
+
+  const response = await Request.findByIdAndUpdate(req.params.id, {status:"ACCEPTED"}, {new: true}).populate(["student", "teacher"])
+  
+  res.status(200).json({
+    status: 'success',
+    data: {
+      requests:response
+    }
+  });
+  
+});
+
 exports.getAll = catchAsync(async (req, res, next) => {
   const requests = await Request.find().populate(["student","teacher"]);
 
@@ -57,7 +84,6 @@ exports.getAll = catchAsync(async (req, res, next) => {
 
 exports.getRequest = factory.getOne(Request,{path:'student'});
 exports.getAllRequests = factory.getAll(Request,{path:'student'})
-exports.getAllStudent = factory.getAllStudents(Request,{path:'student'})
 exports.createRequest = factory.createOne(Request,{path:'student'});
 exports.updateRequest = factory.updateOne(Request,{path:'student'});
 exports.deleteRequest = factory.deleteOne(Request);

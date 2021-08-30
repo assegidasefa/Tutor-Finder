@@ -1,6 +1,7 @@
 const express = require('express');
 const userController = require('../Controllers/userControllers');
 const authController = require('../Controllers/authControllers');
+const adminController = require('../Controllers/adminControllers');
 const router = express.Router();
 const reviewRouter = require('./review');
 const requestRouter = require('./requests');
@@ -11,7 +12,7 @@ const requestRouter = require('./requests');
 router.use('/:teacherId/reviews', reviewRouter);
 //used for the requests
 router.use('/teacher/:teacherId/requests',requestRouter);
-router.use('/student/:studentId/requests',requestRouter);
+
 
 
 
@@ -32,12 +33,12 @@ router.delete('/deleteMe',  userController.deleteMe);
 // user updating the profile
 router.route('/updateUserDetail').patch(userController.uploadUserPhoto,userController.resizeUserPhoto,authController.protect,authController.restrictTo('STUDENT','TEACHER'),userController.updateMe);
 
-router.route('/admin').get(userController.getAllUsers)
+router.route('/admin').get(adminController.protect,adminController.restrictTo('admin'),userController.getAllUsers)
   router.route('/').post(userController.createUser);
 
 router
   .route('/:id')
   .get(userController.getUser)
-  .delete(userController.deleteUser);
+  .delete(adminController.protect,adminController.restrictTo('admin'),userController.deleteUser);
 
 module.exports = router;
