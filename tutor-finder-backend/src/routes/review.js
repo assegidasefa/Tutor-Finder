@@ -12,19 +12,23 @@ router
   .get(adminController.protect,adminController.restrictTo('admin'),reviewController.getAllReviews)
   .post(
     authController.protect,
-    authController.restrictTo('STUDENT'),
+    authController.restrictTo('student'),
     reviewController.setTeacherStudentIds,
     reviewController.createReview
   );
   router
   .route('/:id')
-  .get(reviewController.getReview)
+  .get(
+    authController.protect,
+    authController.restrictTo('teacher'),
+    reviewController.setTeacherStudentIds,
+    reviewController.getReview)
   .patch(
-    authController.restrictTo('STUDENT'),
+    authController.restrictTo('student'),
     reviewController.updateReview
   )
   .delete(
-    authController.restrictTo('STUDENT'),
+    authController.restrictTo('student'),
     reviewController.deleteReview
   );
 
