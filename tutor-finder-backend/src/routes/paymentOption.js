@@ -1,6 +1,7 @@
 const express = require('express');
 const paymentOptionController = require('../controllers/paymentOptionController');
 const authController = require('../Controllers/authControllers');
+const adminController = require('../Controllers/adminControllers');
 
 const router = express.Router();
 
@@ -8,9 +9,9 @@ router.use(authController.protect);
 
 router
   .route('/')
-  .get(paymentOptionController.getAllPaymentOption)
+  .get(adminController.protect,adminController.restrictTo('admin'),authController.restrictTo('student'),paymentOptionController.getAllPaymentOption)
   .post(
-    authController.restrictTo('STUDENT'),
+    adminController.protect,adminController.restrictTo('admin'),
     paymentOptionController.createPaymentOption
   );
 
@@ -18,11 +19,11 @@ router
   .route('/:id')
   .get(paymentOptionController.getPaymentOption)
   .patch(
-    authController.restrictTo('student', 'admin'),
+    adminController.protect,adminController.restrictTo('admin'),
     paymentOptionController.updatePaymentOption
   )
   .delete(
-    authController.restrictTo('student', 'admin'),
+    adminController.protect,adminController.restrictTo('admin'),
     paymentOptionController.deletePaymentOption
   );
 

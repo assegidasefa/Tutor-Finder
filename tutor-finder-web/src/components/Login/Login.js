@@ -90,7 +90,7 @@ export default function Login() {
                         <Button fullWidth variant="contained" color="secondary">
                             Login
                         </Button>
-                        <Typography align="center" variant={"h6"} color="textPrimary" className={classes.typography} >Don't have an acount? <Link to="auth/signup">Register Now</Link></Typography>
+                        <Typography align="center" variant={"h6"} color="textPrimary" className={classes.typography} >Don't have an acount? <Link to="signup">Register Now</Link></Typography>
 
                     </form>
                 </Grid>

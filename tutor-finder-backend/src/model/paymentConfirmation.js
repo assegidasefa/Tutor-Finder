@@ -10,14 +10,15 @@ const paymentConfirmationSchema =mongoose.Schema({
     required:true
        
    },
+  
+   receiptImage:{
+       type:String,
+       required:true
+   },
    userId:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required:true   
-   },
-   receiptImage:{
-       type:String,
-       required:true
    },
    status:{
     type: String,

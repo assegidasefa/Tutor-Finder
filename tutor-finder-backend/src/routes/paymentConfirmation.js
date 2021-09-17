@@ -10,7 +10,8 @@ router
   .route('/')
   .get(paymentConfirmationController.getAllPaymentConfirmation)
   .post(
-    authController.restrictTo('STUDENT'),
+    authController.protect,
+     authController.restrictTo('student'),
  paymentConfirmationController.createpaymentConfirmation
   );
 
@@ -18,11 +19,11 @@ router
   .route('/:id')
   .get(paymentConfirmationController.getPaymentConfrimation)
   .patch(
-    authController.restrictTo('student', 'admin'),
+    authController.restrictTo('student'),
  paymentConfirmationController.updatepaymentConfirmation
   )
   .delete(
-    authController.restrictTo('student', 'admin'),
+    authController.restrictTo('student'),
  paymentConfirmationController.deletepaymentConfirmation
   );
 

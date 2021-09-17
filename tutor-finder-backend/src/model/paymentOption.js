@@ -15,6 +15,7 @@ const paymentOptionSchema =mongoose.Schema({
        type:Boolean,
        default:false
    },
+  
    bank_logo:{
        type:String,
        required:true
